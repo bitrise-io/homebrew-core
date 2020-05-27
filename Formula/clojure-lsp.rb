@@ -1,19 +1,23 @@
 class ClojureLsp < Formula
   desc "Language Server (LSP) for Clojure"
   homepage "https://github.com/snoe/clojure-lsp"
-  url "https://github.com/snoe/clojure-lsp/archive/release-20200314T202821.tar.gz"
-  version "20200314T202821"
-  sha256 "4a3fb5a4b88ebf286fc2e5dc500bc4ddb65962c05ab21a46453a33d867627433"
+  # Switch to use git tag/revision as needed by `lein-git-version`
+  url "https://github.com/snoe/clojure-lsp.git",
+    :tag      => "release-20200514T134144",
+    :revision => "1f22abf175dc5ef69b522c03742fe4235a81de47"
+  version "20200514T134144"
   head "https://github.com/snoe/clojure-lsp.git"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "7758a824cf67ec6dcf103d1ebe8edef7455d41a630946ce311b8c0db89796a40" => :catalina
-    sha256 "6b84d8a6fa6558ce83da30111923ca35b8d0afd3021796c7193eff2add049dc9" => :mojave
-    sha256 "2507e16ae03bf19cf30415b14516889a6fec3ea8e88dca024296231c748faca5" => :high_sierra
+    sha256 "777813aa9ba4e331576b16102eac9c2f7fa56a6f9ba4dd282f0d4352abbffef1" => :catalina
+    sha256 "9702064cf5d6e8d93c24c67b7779e5230e3370ab43cdadbc16961ba940ec584c" => :mojave
+    sha256 "419af199ab0690778096ed08f78ed04123f2ac9f3acc0c427e697a52179ef298" => :high_sierra
   end
 
   depends_on "leiningen" => :build
+  # The Java Runtime version only recognizes class file versions up to 52.0
+  depends_on :java => "1.8"
 
   def install
     system "lein", "uberjar"

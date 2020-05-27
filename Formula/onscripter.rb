@@ -1,14 +1,14 @@
 class Onscripter < Formula
   desc "NScripter-compatible visual novel engine"
   homepage "https://onscripter.osdn.jp/"
-  url "https://onscripter.osdn.jp/onscripter-20200306.tar.gz"
-  sha256 "ab5b110c13db85d100d21f1ea72c6a890ab1392610e06387c84e60bb608a2f06"
+  url "https://onscripter.osdn.jp/onscripter-20200510.tar.gz"
+  sha256 "908d6b75f19144abe80ca997e376898bae4a952a939aa223b1a7e777b4ab5fbf"
 
   bottle do
     cellar :any
-    sha256 "de5abe8c2fe87429026f99b5c861d062b857ec7ac176d91ec6ec177a4e188057" => :catalina
-    sha256 "0cb5bc3c55a8594647f3dcf8710cfcd93d9094ff036e416139311956050e7e2b" => :mojave
-    sha256 "239a2823f7da43469765f0a17f542f8e57ded2cbd9c3262c81b3786160c86ee6" => :high_sierra
+    sha256 "9f5c06bd56b59e72e480ac8b0af62f6f3f152a6829767e374885acdde4d79846" => :catalina
+    sha256 "e32c4e0dd2f0632806cb4eaece7a97c885dc9dd41f6d1d5e2ba08f27e76edc4e" => :mojave
+    sha256 "3d0382efbd3511d0230ec5439fbdfcf69a6789257ba6ed6677aa941ce36c7d94" => :high_sierra
   end
 
   depends_on "pkg-config" => :build

@@ -2,13 +2,13 @@ class Php < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
   # Should only be updated if the new version is announced on the homepage, https://www.php.net/
-  url "https://www.php.net/distributions/php-7.4.5.tar.xz"
-  sha256 "d059fd7f55bdc4d2eada15a00a2976697010d3631ef6f83149cc5289e1f23c2c"
+  url "https://www.php.net/distributions/php-7.4.6.tar.xz"
+  sha256 "d740322f84f63019622b9f369d64ea5ab676547d2bdcf12be77a5a4cffd06832"
 
   bottle do
-    sha256 "ecc5b99761bd6b6a69afce07909638999f08bc3e18585a992e675246e0548230" => :catalina
-    sha256 "2e0e7d9b1e2f5115262eb97511c903b8ba1ea1586a7c29ae1503f4e10cde1479" => :mojave
-    sha256 "f105dc25c94420589262df41b75075173087dcef2fa2dd08ca7022afed700a4c" => :high_sierra
+    sha256 "833dad4c93ac81718d70f209d05ee998a29ca70ef5798f39597a4cabc7d63e96" => :catalina
+    sha256 "8166a2659e6cd1c83840f588ad1985edf6c965d6f792a73142736446db36ceb1" => :mojave
+    sha256 "26ab95a1a29cf98e851f4e4dcd0f1dad67f690915a429cb606c8b73ae3f8f1e9" => :high_sierra
   end
 
   head do
@@ -190,10 +190,11 @@ class Php < Formula
       "extension_dir = \"#{HOMEBREW_PREFIX}/lib/php/pecl/#{orig_ext_dir}\""
 
     # Use OpenSSL cert bundle
+    openssl = Formula["openssl@1.1"]
     inreplace "php.ini-development", /; ?openssl\.cafile=/,
-      "openssl.cafile = \"#{etc}/openssl@1.1/cert.pem\""
+      "openssl.cafile = \"#{openssl.pkgetc}/cert.pem\""
     inreplace "php.ini-development", /; ?openssl\.capath=/,
-      "openssl.capath = \"#{etc}/openssl@1.1/certs\""
+      "openssl.capath = \"#{openssl.pkgetc}/certs\""
 
     config_files = {
       "php.ini-development"   => "php.ini",

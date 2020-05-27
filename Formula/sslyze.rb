@@ -5,8 +5,8 @@ class Sslyze < Formula
   homepage "https://github.com/nabla-c0d3/sslyze"
 
   stable do
-    url "https://github.com/nabla-c0d3/sslyze/archive/3.0.1.tar.gz"
-    sha256 "d78020876eb8a2e3227724ea14c9d7bb74e0cb55501dc910c53cbac8d8e47987"
+    url "https://github.com/nabla-c0d3/sslyze/archive/3.0.4.tar.gz"
+    sha256 "d9be6583b818aaba381dc0fc927d0b7426fb550af43f46bb43c258717acf95bd"
 
     resource "nassl" do
       url "https://github.com/nabla-c0d3/nassl/archive/3.0.0.tar.gz"
@@ -16,9 +16,9 @@ class Sslyze < Formula
 
   bottle do
     cellar :any
-    sha256 "133e93307b8a617a3113bfb8a58bcbc3270fa91cb275db0b028f0887ba0f2e07" => :catalina
-    sha256 "8d68f261663ad3942f73c307517dbe4e79e9adcdea25cb32b9f01eddf2ec4a3f" => :mojave
-    sha256 "15d9ab00f883ef1b0f5affa1c618f197ec97900969384bf876044a4b3acd5199" => :high_sierra
+    sha256 "5f9efdefc72ec3e5d5cf9ea4e995d25257adb853b598abcfbc939375bbb824f7" => :catalina
+    sha256 "e7ade476130d7858a570fe514502660a74cc12be699fea15bb0cffca64e864ef" => :mojave
+    sha256 "c6a47cc544a0922b4cde92d2fbebbe18080c47e977537653da327e48410290de" => :high_sierra
   end
 
   head do
@@ -33,12 +33,7 @@ class Sslyze < Formula
   depends_on :arch => :x86_64
   depends_on "libffi"
   depends_on "openssl@1.1"
-  depends_on "python"
-
-  resource "asn1crypto" do
-    url "https://files.pythonhosted.org/packages/9f/3d/8beae739ed8c1c8f00ceac0ab6b0e97299b42da869e24cf82851b27a9123/asn1crypto-1.3.0.tar.gz"
-    sha256 "5a215cb8dc12f892244e3a113fe05397ee23c5c4ca7a69cd6e69811755efc42d"
-  end
+  depends_on "python@3.8"
 
   resource "cffi" do
     url "https://files.pythonhosted.org/packages/05/54/3324b0c46340c31b909fcec598696aaec7ddc8c18a63f2db352562d3354c/cffi-1.14.0.tar.gz"
@@ -46,8 +41,8 @@ class Sslyze < Formula
   end
 
   resource "cryptography" do
-    url "https://files.pythonhosted.org/packages/be/60/da377e1bed002716fb2d5d1d1cab720f298cb33ecff7bf7adea72788e4e4/cryptography-2.8.tar.gz"
-    sha256 "3cda1f0ed8747339bbdf71b9f38ca74c7b592f24f65cdb3ab3765e4b02871651"
+    url "https://files.pythonhosted.org/packages/9d/0a/d7060601834b1a0a84845d6ae2cd59be077aafa2133455062e47c9733024/cryptography-2.9.tar.gz"
+    sha256 "0cacd3ef5c604b8e5f59bf2582c076c98a37fe206b31430d0cd08138aff0986e"
   end
 
   resource "pycparser" do
@@ -65,13 +60,8 @@ class Sslyze < Formula
     sha256 "869ad3c8a45e73bcbb3bf0dd094f0345675c830e851576f42585af1a60c2b0e5"
   end
 
-  resource "typing_extensions" do
-    url "https://files.pythonhosted.org/packages/6a/28/d32852f2af6b5ead85d396249d5bdf450833f3a69896d76eb480d9c5e406/typing_extensions-3.7.4.2.tar.gz"
-    sha256 "79ee589a3caca649a9bfd2a8de4709837400dfa00b6cc81962a1e6a1815969ae"
-  end
-
   def install
-    venv = virtualenv_create(libexec, "python3")
+    venv = virtualenv_create(libexec, "python3.8")
 
     res = resources.map(&:name).to_set
     res -= %w[nassl]
@@ -82,6 +72,7 @@ class Sslyze < Formula
 
     resource("nassl").stage do
       nassl_path = Pathname.pwd
+      inreplace "Pipfile", 'python_version = "3.7"', 'python_version = "3.8"'
       system "pipenv", "install", "--dev"
       system "pipenv", "run", "invoke", "build.all"
       venv.pip_install nassl_path

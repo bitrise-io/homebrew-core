@@ -1,17 +1,18 @@
 class Topgrade < Formula
   desc "Upgrade all the things"
   homepage "https://github.com/r-darwish/topgrade"
-  url "https://github.com/r-darwish/topgrade/archive/v4.3.0.tar.gz"
-  sha256 "93bdd01a8572ec09fa73f9fea5db7d0a1df99cfa661e049ee618a0d95c01abde"
+  url "https://github.com/r-darwish/topgrade/archive/v4.5.0.tar.gz"
+  sha256 "92ec9e1b418c6d93894c5a356a02c9cb9e8426a902dd6d253eb844925110a2ed"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "fd2ce552d9162dd66e94f0d075c8e14c8a49c57e1c3237c1d02eeed54c52b1bd" => :catalina
-    sha256 "d4e3b6c42f5ce3a347d24d3325cd9710288faa211392eb05fb11cf41a0ac9be7" => :mojave
-    sha256 "46aac690711be4d393b66b5e2bbfe09682dad3dafe97522ead75649122ac56e3" => :high_sierra
+    sha256 "155b46bd6fe2246585b137b7c4d5eb1b2e8bf0467e205aa6eed5d5230a9f3ed4" => :catalina
+    sha256 "c57a6a13ca981427f06cde7b316f79423aee34e4f39be3f6a7830e569a6838e4" => :mojave
+    sha256 "1d16edb497afd9b047d30895a9ed029acfee42e8329a1ec38256f5e358349a54" => :high_sierra
   end
 
   depends_on "rust" => :build
+  depends_on :xcode => :build if MacOS::CLT.version >= "11.4" # libxml2 module bug
 
   def install
     system "cargo", "install", "--locked", "--root", prefix, "--path", "."

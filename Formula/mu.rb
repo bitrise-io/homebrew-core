@@ -1,19 +1,17 @@
 # Note that odd release numbers indicate unstable releases.
-# Please only submit PRs for [x.x.even] version numbers:
+# Please only submit PRs for [x.even.x] version numbers:
 # https://github.com/djcb/mu/commit/23f4a64bdcdee3f9956a39b9a5a4fd0c5c2370ba
 class Mu < Formula
   desc "Tool for searching e-mail messages stored in the maildir-format"
   homepage "https://www.djcbsoftware.nl/code/mu/"
-  url "https://github.com/djcb/mu/releases/download/1.2/mu-1.2.0.tar.xz"
-  sha256 "f634c7f244dc6844ff71dc3c3e1893e48e193caa9e0e747eba616309775f053a"
-  revision 1
+  url "https://github.com/djcb/mu/releases/download/1.4.6/mu-1.4.6.tar.xz"
+  sha256 "0cd27f223a5e408ef19bc2169c94bd4e87428ee9635bee706f0cdde4e85d5797"
 
   bottle do
     cellar :any
-    sha256 "c2b2f55ab9d1743afcece35be56a8dece9dbc8a970c19fdd15c36da2c5581dc9" => :catalina
-    sha256 "a8c766c5cfa0951ea3a683ddac460e2c66daa231fb586c2b73f91ddabccdb798" => :mojave
-    sha256 "b005381a23edee1bd9a7f02d5dae3cf4bb4e3bdfb494c17e0b44a817af40dd3a" => :high_sierra
-    sha256 "3cdc7db8c5adafc23cdce44aa0592afe203d770d4c1e226a5bf9e6243b9ed3ff" => :sierra
+    sha256 "c3f1a3a24fe5b3f896b11141cb29d14bdb0792fb365905337036c47d8b0adf11" => :catalina
+    sha256 "b2f871bae773dd87eaba5a6741a691f650f7bd345757f47f18e2709a03ec0447" => :mojave
+    sha256 "9eed3037a373a31a5666c4b1cff7a4013d715079569876ce87f0db51fac9ba9c" => :high_sierra
   end
 
   head do
@@ -42,14 +40,6 @@ class Mu < Formula
     system "make", "install"
   end
 
-  def caveats
-    <<~EOS
-      Existing mu users are recommended to run the following after upgrading:
-
-        mu index --rebuild
-    EOS
-  end
-
   # Regression test for:
   # https://github.com/djcb/mu/issues/397
   # https://github.com/djcb/mu/issues/380
@@ -76,12 +66,10 @@ class Mu < Formula
       This used to happen outdoors. It was more fun then.
     EOS
 
-    system "#{bin}/mu", "index",
-                        "--muhome",
-                        testpath,
-                        "--maildir=#{testpath}"
+    system "#{bin}/mu", "init", "--muhome=#{testpath}", "--maildir=#{testpath}"
+    system "#{bin}/mu", "index", "--muhome=#{testpath}"
 
-    mu_find = "#{bin}/mu find --muhome #{testpath} "
+    mu_find = "#{bin}/mu find --muhome=#{testpath} "
     find_message = "#{mu_find} msgid:2222222222@example.com"
     find_message_and_related = "#{mu_find} --include-related msgid:2222222222@example.com"
 

@@ -1,14 +1,14 @@
 class Gh < Formula
   desc "GitHub command-line tool"
   homepage "https://github.com/cli/cli"
-  url "https://github.com/cli/cli/archive/v0.6.4.tar.gz"
-  sha256 "7dbe61da02c8fed6412ed6a3f5ed6163c495275f6e61236f51a27ccb052acf41"
+  url "https://github.com/cli/cli/archive/v0.9.0.tar.gz"
+  sha256 "318295e5a662f785662751f1e2cd4b1f613ec3aced1c4e7f1755d27922dbfdbf"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "a0fbd53a580d32c326f1e3a17410446e2b5f265adfad77f7e2b06c4c93781e60" => :catalina
-    sha256 "34b836aea96868c452aeb32a7d1ad447807eae8d21294ba9fc901f662fd6f698" => :mojave
-    sha256 "821d0d7d77e6464e7fb2377600fc94a94103811caaf599ef410df8049ec82070" => :high_sierra
+    sha256 "e4b0a075ce99228e030d453d1c2107240190a99ed81d8b33fef4408fa4d6f578" => :catalina
+    sha256 "d4add960bbc4b9e5e7e58f3bd5cd792b449572f78488d290b4397c91f8fdf125" => :mojave
+    sha256 "4cea4e4f287a06c47d6e3a7476a324facafe3364ba2bd8afffe8da4521fb6a31" => :high_sierra
   end
 
   depends_on "go" => :build

@@ -3,14 +3,14 @@ require "language/node"
 class Cdk8s < Formula
   desc "Define k8s native apps and abstractions using object-oriented programming"
   homepage "https://github.com/awslabs/cdk8s"
-  url "https://registry.npmjs.org/cdk8s-cli/-/cdk8s-cli-0.19.0.tgz"
-  sha256 "ffc985c140a2ec9aca15c92e144a64531a27730860f55010c3a4f9098f0d746d"
+  url "https://registry.npmjs.org/cdk8s-cli/-/cdk8s-cli-0.22.0.tgz"
+  sha256 "da242d496ca0ac4b63a5d5cfdc43581b8f22bf39a96d0d2fb9b358cd95beb2e0"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "e4a9d31fc1f09eb3b9636461e0077bb2dd6c2355c38639d674f8436140e4a1ca" => :catalina
-    sha256 "8a55971ec0790a61c680580dfee8081b54209965e8a3662391e83a5abcdd3f64" => :mojave
-    sha256 "ed79b7ac524c42eed6d49f1341d84ee972f0a8db59894852b52585abbdff44fe" => :high_sierra
+    sha256 "676f4612198eb8e8c685d50a1e3b2a982b559f40493d50723aca5d19ef4c7565" => :catalina
+    sha256 "4ec0b1b73025b606dfbfa0bb23731d7132c2b02e68b58de534dda9059357fd29" => :mojave
+    sha256 "85ca3bbb134dbc96e43c2de06305cddcf6b50e44d9b200f792c91abea635fdc7" => :high_sierra
   end
 
   depends_on "node"

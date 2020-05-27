@@ -2,14 +2,15 @@ class Git < Formula
   desc "Distributed revision control system"
   homepage "https://git-scm.com"
   # Note: Please keep these values in sync with git-gui.rb when updating.
-  url "https://www.kernel.org/pub/software/scm/git/git-2.26.1.tar.xz"
-  sha256 "888228408f254634330234df3cece734d190ef6381063821f31ec020538f0368"
+  url "https://www.kernel.org/pub/software/scm/git/git-2.26.2.tar.xz"
+  sha256 "6d65132471df9e531807cb2746f8be317e22a343b9385bbe11c9ce7f0d2fc848"
+  revision 1
   head "https://github.com/git/git.git", :shallow => false
 
   bottle do
-    sha256 "8760f61f38f7fbf798b45af291edbe634380ad0fcd565fa595e244ee7627e560" => :catalina
-    sha256 "bf46a2d1d37c26a79933882f65b445ae71a3c47f5d37c953a231b9b30441e94e" => :mojave
-    sha256 "62a4d883f327361bd447d9bde20bc015eaa087e765d172ef761424f4283bf801" => :high_sierra
+    sha256 "8796a6c37723ae33d22fe5bfc249b9135b309c87ec2b41e6025d726df1a2dee6" => :catalina
+    sha256 "592f95984655ada33979a863f5d12e07fca9a67b7c6e7eab9f17b597f9cd9fc9" => :mojave
+    sha256 "4d765a420dec19d5261e12b336b6912e9e5fb571ffb5bc4b5d7eae7f7766347d" => :high_sierra
   end
 
   depends_on "gettext"
@@ -21,13 +22,13 @@ class Git < Formula
   end
 
   resource "html" do
-    url "https://www.kernel.org/pub/software/scm/git/git-htmldocs-2.26.1.tar.xz"
-    sha256 "e857bfef9f7f63b2a553564226500ccca8da40b71e1009fcc4fab84ad951b1b0"
+    url "https://www.kernel.org/pub/software/scm/git/git-htmldocs-2.26.2.tar.xz"
+    sha256 "763c2ab83b980edb210d45d9ad25337afd3610ac3749f4124964f86bbdbb201e"
   end
 
   resource "man" do
-    url "https://www.kernel.org/pub/software/scm/git/git-manpages-2.26.1.tar.xz"
-    sha256 "a93cb7f45dab1fc45a9a4a6cfc32f1a8edd0894c0441e163951c323c7a184048"
+    url "https://www.kernel.org/pub/software/scm/git/git-manpages-2.26.2.tar.xz"
+    sha256 "433de104f74a855b7074d88a27e77bf6f0764074e449ffc863f987c124716465"
   end
 
   resource "Net::SMTP::SSL" do
@@ -35,11 +36,19 @@ class Git < Formula
     sha256 "7b29c45add19d3d5084b751f7ba89a8e40479a446ce21cfd9cc741e558332a00"
   end
 
+  # Fixes a bug where fast-forwarding via `git rebase` doesn't work with rebase.abbreviateCommands.
+  # This bug broke `brew update` for some users.
+  # **Please verify the bug is fixed before removing this patch.**
+  # https://github.com/Homebrew/brew/issues/7374
+  patch do
+    url "https://github.com/agrn/git/commit/058d9c128c63b0a4849b384b358cca9bb19c56db.patch?full_index=1"
+    sha256 "40a243ccc566721bc4df6d9300772fdd367cb9e35a1652f888b89f3f32823227"
+  end
+
   def install
     # If these things are installed, tell Git build system not to use them
     ENV["NO_FINK"] = "1"
     ENV["NO_DARWIN_PORTS"] = "1"
-    ENV["NO_R_TO_GCC_LINKER"] = "1" # pass arguments to LD correctly
     ENV["PYTHON_PATH"] = which("python")
     ENV["PERL_PATH"] = which("perl")
     ENV["USE_LIBPCRE2"] = "1"
@@ -56,8 +65,6 @@ class Git < Formula
     ].uniq.map do |p|
       "#{p}/Library/Perl/#{perl_version}/darwin-thread-multi-2level"
     end.join(":")
-
-    ENV["NO_PERL_MAKEMAKER"] = "1" unless quiet_system ENV["PERL_PATH"], "-e", "use ExtUtils::MakeMaker"
 
     # Ensure we are using the correct system headers (for curl) to workaround
     # mismatched Xcode/CLT versions:
@@ -136,9 +143,6 @@ class Git < Formula
     chmod 0644, Dir["#{share}/doc/git-doc/**/*.{html,txt}"]
     chmod 0755, Dir["#{share}/doc/git-doc/{RelNotes,howto,technical}"]
 
-    # To avoid this feature hooking into the system OpenSSL, remove it
-    rm "#{libexec}/git-core/git-imap-send" if MacOS.version >= :yosemite
-
     # git-send-email needs Net::SMTP::SSL
     resource("Net::SMTP::SSL").stage do
       (share/"perl5").install "lib/Net"
@@ -169,6 +173,8 @@ class Git < Formula
     system bin/"git", "init"
     %w[haunted house].each { |f| touch testpath/f }
     system bin/"git", "add", "haunted", "house"
+    system bin/"git", "config", "user.name", "'A U Thor'"
+    system bin/"git", "config", "user.email", "author@example.com"
     system bin/"git", "commit", "-a", "-m", "Initial Commit"
     assert_equal "haunted\nhouse", shell_output("#{bin}/git ls-files").strip
 

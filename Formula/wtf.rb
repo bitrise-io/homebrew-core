@@ -1,8 +1,8 @@
 class Wtf < Formula
   desc "Translate common Internet acronyms"
   homepage "https://sourceforge.net/projects/bsdwtf/"
-  url "https://downloads.sourceforge.net/project/bsdwtf/wtf-20200326.tar.gz"
-  sha256 "8ff7431512af9866cbe19d665b403a172614d6c2306b4d6291a1c82e2d7b7697"
+  url "https://downloads.sourceforge.net/project/bsdwtf/wtf-20200518.tar.gz"
+  sha256 "c86b84332875e48dad2ab18fced62fdf6f3d9cf3fcd10ff3468d6e88f5385c22"
 
   bottle :unneeded
 

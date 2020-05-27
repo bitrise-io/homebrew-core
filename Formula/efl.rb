@@ -1,23 +1,26 @@
 class Efl < Formula
   desc "Enlightenment Foundation Libraries"
   homepage "https://www.enlightenment.org"
-  url "https://download.enlightenment.org/rel/libs/efl/efl-1.22.4.tar.xz"
-  sha256 "454002b98922f5590048ff523237c41f93d8ab0a76174be167dea0677c879120"
+  url "https://download.enlightenment.org/rel/libs/efl/efl-1.24.1.tar.xz"
+  sha256 "67aafb53926426b245ba934e3a4adc2f465041b9c3cbcabfff8f914367f94bf7"
 
   bottle do
-    sha256 "d04b2c44f519e791014658b0994f49eee9940ca684ea2de402923bea23db4adc" => :mojave
-    sha256 "6d222b36c6172b11ad731ca15481c31a46ad38544ffed22d0d0a778861e63e85" => :high_sierra
-    sha256 "5e303d498b339b5c248e9167efd68c362013d9198fdf5dbed98138721688a8db" => :sierra
+    sha256 "c2f72151d626413c35edeb310b522919c9575028b1d4d5a8912cf5ba39c15655" => :catalina
+    sha256 "6a6768c0e0ed5344023c4bd8a6ace46b4a90cf24634226a286d59f2c44455c64" => :mojave
+    sha256 "535b32a46830c401d6513fc816e67758f52f1f99b90bb27ed8bcc745d256a446" => :high_sierra
   end
 
-  depends_on "gettext" => :build
+  depends_on "meson" => :build
+  depends_on "ninja" => :build
   depends_on "pkg-config" => :build
   depends_on "bullet"
   depends_on "dbus"
   depends_on "fontconfig"
   depends_on "freetype"
   depends_on "fribidi"
+  depends_on "gettext"
   depends_on "giflib"
+  depends_on "glib"
   depends_on "gst-plugins-good"
   depends_on "gstreamer"
   depends_on "jpeg"
@@ -28,27 +31,40 @@ class Efl < Formula
   depends_on "libspectre"
   depends_on "libtiff"
   depends_on "luajit"
+  depends_on "lz4"
   depends_on "openssl@1.1"
   depends_on "poppler"
   depends_on "pulseaudio"
   depends_on "shared-mime-info"
 
-  # Fix build with 10.15+ SDK
-  patch do
-    url "https://github.com/Enlightenment/efl/commit/51e4bcc32c8b3d20980dd4f669e92e32a95a82fb.patch?full_index=1"
-    sha256 "173f15e9154f76898ce090211a7c87675d9198a79a32c7ef59df870cfafea02c"
-  end
+  uses_from_macos "zlib"
 
   def install
-    ENV.cxx11
-
-    args = %W[
-      --disable-dependency-tracking
-      --prefix=#{prefix}
+    args = std_meson_args + %w[
+      -Davahi=false
+      -Dbuild-examples=false
+      -Dbuild-tests=false
+      -Dcocoa=true
+      -Dembedded-lz4=false
+      -Deeze=false
+      -Dglib=true
+      -Dlibmount=false
+      -Dopengl=full
+      -Dphysics=true
+      -Dsystemd=false
+      -Dv4l2=false
+      -Dx11=false
     ]
 
-    system "./configure", *args
-    system "make", "install"
+    # Install in our Cellar - not dbus's
+    inreplace "dbus-services/meson.build", "dep.get_pkgconfig_variable('session_bus_services_dir')",
+                                           "'#{share}/dbus-1/services'"
+
+    mkdir "build" do
+      system "meson", *args, ".."
+      system "ninja", "-v"
+      system "ninja", "install", "-v"
+    end
   end
 
   def post_install

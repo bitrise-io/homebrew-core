@@ -1,19 +1,19 @@
 class Grafana < Formula
   desc "Gorgeous metric visualizations and dashboards for timeseries databases"
   homepage "https://grafana.com"
-  url "https://github.com/grafana/grafana/archive/v6.7.2.tar.gz"
-  sha256 "dc81cdb77c1c0ae99ae3302a0ef8b3d577f4a717208a90df65da8fcb282122fc"
+  url "https://github.com/grafana/grafana/archive/v7.0.1.tar.gz"
+  sha256 "e11286c87c7ffe8f19d3631a4044d8d9e4378fcd5a512b2e9ee4c0f276b1b388"
   head "https://github.com/grafana/grafana.git"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "181fb9e06748bf356c96165190d2c39ecd0e59a69a4a08321ac1ff8e42f799ed" => :catalina
-    sha256 "733c40fbc529ee2951088d577c6d6cb9231002d25a00191453147782514c0db6" => :mojave
-    sha256 "a4e8f6fe7b54061c5cfbce57c3c4c86e09774cc6810b003d0ffee0419e9233d8" => :high_sierra
+    sha256 "10935680cff7e1326eb23aaf962afaa7252504d740de679dd2abfb41651aac98" => :catalina
+    sha256 "2b64b190e824c52ce2f7919ba234230eb15f09787583011817bbfe1f0111c3d7" => :mojave
+    sha256 "d3fdce14baffc763f3cf92f49a24de7614e5433902885fb755500ae92880c25b" => :high_sierra
   end
 
   depends_on "go" => :build
-  depends_on "node@10" => :build
+  depends_on "node" => :build
   depends_on "yarn" => :build
 
   def install
@@ -34,7 +34,7 @@ class Grafana < Formula
       cp("conf/sample.ini", "conf/grafana.ini.example")
       etc.install "conf/sample.ini" => "grafana/grafana.ini"
       etc.install "conf/grafana.ini.example" => "grafana/grafana.ini.example"
-      pkgshare.install "conf", "public", "tools", "vendor"
+      pkgshare.install "conf", "public", "tools"
       prefix.install_metafiles
     end
   end
@@ -119,7 +119,7 @@ class Grafana < Formula
     listening = Timeout.timeout(10) do
       li = false
       r.each do |l|
-        if /Initializing HTTPServer/.match?(l)
+        if /HTTP Server Listen/.match?(l)
           li = true
           break
         end

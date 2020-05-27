@@ -1,14 +1,14 @@
 class Clamav < Formula
   desc "Anti-virus software"
   homepage "https://www.clamav.net/"
-  url "https://www.clamav.net/downloads/production/clamav-0.102.2.tar.gz"
-  mirror "https://fossies.org/linux/misc/clamav-0.102.2.tar.gz"
-  sha256 "89fcdcc0eba329ca84d270df09d2bb89ae55f5024b0c3bddb817512fb2c907d3"
+  url "https://www.clamav.net/downloads/production/clamav-0.102.3.tar.gz"
+  mirror "https://fossies.org/linux/misc/clamav-0.102.3.tar.gz"
+  sha256 "ed3050c4569989ee7ab54c7b87246b41ed808259632849be0706467442dc0693"
 
   bottle do
-    sha256 "544f511ddd1c68b88a93f017617c968a4e5d34fc6a010af15e047a76c5b16a9f" => :catalina
-    sha256 "a92959f8a348642739db5e023e4302809c8272da1bea75336635267e449aacdf" => :mojave
-    sha256 "252446ee2509c9653fc9ab160811232d228f9995fcd7d4e9378c128bccd5ecaa" => :high_sierra
+    sha256 "14f69086a768c2a4a30fd5c4316201363b5265eb4a303159fd7773bc44d42e05" => :catalina
+    sha256 "1de7b34afbff07514302deb8ea6f3fb79095509911be98e3ab4f5d674f0f8ef2" => :mojave
+    sha256 "7d2140eef1f3af64ec2dc22c78d4a8f1778f56eb9ae84ee3a38fa1814d70d98a" => :high_sierra
   end
 
   head do
@@ -21,11 +21,14 @@ class Clamav < Formula
 
   depends_on "pkg-config" => :build
   depends_on "json-c"
+  depends_on "libiconv"
   depends_on "openssl@1.1"
-  depends_on "pcre"
+  depends_on "pcre2"
   depends_on "yara"
 
+  uses_from_macos "bzip2"
   uses_from_macos "curl"
+  uses_from_macos "libxml2"
   uses_from_macos "zlib"
 
   skip_clean "share/clamav"
@@ -38,11 +41,15 @@ class Clamav < Formula
       --libdir=#{lib}
       --sysconfdir=#{etc}/clamav
       --disable-zlib-vcheck
-      --enable-llvm=no
-      --with-libjson=#{Formula["json-c"].opt_prefix}
+      --with-llvm=no
+      --with-libiconv-prefix=#{Formula["libiconv"].opt_prefix}
+      --with-iconv=#{Formula["libiconv"].opt_prefix}
+      --with-libjson-static=#{Formula["json-c"].opt_prefix}/lib/libjson-c.a
       --with-openssl=#{Formula["openssl@1.1"].opt_prefix}
-      --with-pcre=#{Formula["pcre"].opt_prefix}
+      --with-pcre=#{Formula["pcre2"].opt_prefix}
       --with-zlib=#{MacOS.sdk_path_if_needed}/usr
+      --with-libbz2-prefix=#{MacOS.sdk_path_if_needed}/usr
+      --with-xml=#{MacOS.sdk_path_if_needed}/usr
     ]
 
     pkgshare.mkpath

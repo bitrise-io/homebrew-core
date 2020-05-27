@@ -2,21 +2,22 @@ class Xgboost < Formula
   desc "Scalable, Portable and Distributed Gradient Boosting Library"
   homepage "https://xgboost.ai/"
   url "https://github.com/dmlc/xgboost.git",
-      :tag      => "v0.90",
-      :revision => "515f5f5c4779ff5361dcd796e22d55937e1048ea"
+      :tag      => "v1.1.0",
+      :revision => "f5d4fddafec7ff0e908b776e0cebf554df6b89d0"
 
   bottle do
     cellar :any
-    sha256 "c1f4c85c24798e3e64d0c3b4312eadb89bd0c1ae057058d450bf1414c12b8925" => :catalina
-    sha256 "280fe55391f3b02fd7424afbcda34bbd861175567fe7b6b8fc4e45514bc12914" => :mojave
-    sha256 "f419cdc75ffc06ca1f2247474317b782031f019fa66bc7e2cba668dfc5761c9c" => :high_sierra
+    sha256 "7641d5ec78f41c5970703a62d6a06cf75ca8859b98e0d6820119672c4b985942" => :catalina
+    sha256 "50e6661f93dc3d8c87801b61e22f1de87fed8e50c92fc724c920035d7bd6724e" => :mojave
+    sha256 "fe443009e2572f31ab0d5f0e7138d3f62fbf24f148e12cc7558ae012cf72a242" => :high_sierra
   end
 
   depends_on "cmake" => :build
+  depends_on "libomp"
 
   def install
     mkdir "build" do
-      system "cmake", *std_cmake_args, "-DUSE_OPENMP=0", ".."
+      system "cmake", *std_cmake_args, ".."
       system "make"
       system "make", "install"
     end

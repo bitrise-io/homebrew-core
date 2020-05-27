@@ -1,14 +1,14 @@
 class PostgresqlAT11 < Formula
   desc "Object-relational database system"
   homepage "https://www.postgresql.org/"
-  url "https://ftp.postgresql.org/pub/source/v11.7/postgresql-11.7.tar.bz2"
-  sha256 "324ae93a8846fbb6a25d562d271bc441ffa8794654c5b2839384834de220a313"
+  url "https://ftp.postgresql.org/pub/source/v11.8/postgresql-11.8.tar.bz2"
+  sha256 "eaf2f4329ccc349c89e950761b81daf8c99bb8966abcab5665ccd6ee95c77ae2"
+  revision 1
 
   bottle do
-    rebuild 1
-    sha256 "c12eff2a53b44e15ced27e8d63a53a648bd89ba63b52c6893d14c80cb1d2bcea" => :catalina
-    sha256 "290dced7cbf937c3b8fe38ea70857509cb2580044cee9ce687011e44c2a140d4" => :mojave
-    sha256 "e7304315a0c5b591118b6568699cb86fb504db2ff6beeb9bc00c96ed48f85ba6" => :high_sierra
+    sha256 "0b7485f02a4645bc0c835d5bfd5766c871c27282acbcc0dedfce8652c318cae8" => :catalina
+    sha256 "c5775463f96853e3ca58ff447c7bf7bc811991ecb9fb3e0a0c75a5cbf90ea2aa" => :mojave
+    sha256 "86cbfc8de2354ba85063acdd12d0493e0a5c9af5498d4f2174af7e9019962d11" => :high_sierra
   end
 
   keg_only :versioned_formula
@@ -23,9 +23,6 @@ class PostgresqlAT11 < Formula
   uses_from_macos "perl"
 
   def install
-    # avoid adding the SDK library directory to the linker search path
-    ENV["XML2_CONFIG"] = "xml2-config --exec-prefix=/usr"
-
     ENV.prepend "LDFLAGS", "-L#{Formula["openssl@1.1"].opt_lib} -L#{Formula["readline"].opt_lib}"
     ENV.prepend "CPPFLAGS", "-I#{Formula["openssl@1.1"].opt_include} -I#{Formula["readline"].opt_include}"
 
@@ -47,15 +44,9 @@ class PostgresqlAT11 < Formula
       --with-openssl
       --with-pam
       --with-perl
+      --with-tcl
       --with-uuid=e2fs
     ]
-
-    # The CLT is required to build Tcl support on 10.7 and 10.8 because
-    # tclConfig.sh is not part of the SDK
-    args << "--with-tcl"
-    if File.exist?("#{MacOS.sdk_path}/System/Library/Frameworks/Tcl.framework/tclConfig.sh")
-      args << "--with-tclconfig=#{MacOS.sdk_path}/System/Library/Frameworks/Tcl.framework"
-    end
 
     system "./configure", *args
     system "make"

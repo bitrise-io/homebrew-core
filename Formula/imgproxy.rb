@@ -1,15 +1,15 @@
 class Imgproxy < Formula
   desc "Fast and secure server for resizing and converting remote images"
   homepage "https://imgproxy.net"
-  url "https://github.com/imgproxy/imgproxy/archive/v2.12.0.tar.gz"
-  sha256 "79a5e191bdda16a27d37e9d3b5e534a76df26bb5e3c5ff60525651a695d88067"
+  url "https://github.com/imgproxy/imgproxy/archive/v2.13.1.tar.gz"
+  sha256 "1a65fd8579e9a9f6a393d4d768f517e48e090707a11cc02bb46153e26ac0c833"
   head "https://github.com/imgproxy/imgproxy.git"
 
   bottle do
     cellar :any
-    sha256 "e0baaa3445f5ee2c689e16797c52eceaa6ccf38adfcf6efcb94edbf9251e27a2" => :catalina
-    sha256 "42f1e88eba98b480965db896ef720236ad594687bce8aa9a15451ca9e082a532" => :mojave
-    sha256 "1dbe1260950df1f328d0329372a6752fcf76040baed058a10b0bdf7f32e9d60b" => :high_sierra
+    sha256 "aa216dfb0bd348df0369d6ea2d5269866dbc71d125ec9ed3f16eec27840ab61f" => :catalina
+    sha256 "dc8416f0e42e868bf4b8d340f02c3c2cc19f960e4a21adfa36424288f2152821" => :mojave
+    sha256 "27950f4ad2bfa34bd62294324775244bec3f019c5ec9dcdc3785624ce772474f" => :high_sierra
   end
 
   depends_on "go" => :build

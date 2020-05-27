@@ -1,14 +1,14 @@
 class Deno < Formula
-  desc "Command-line JavaScript / TypeScript engine"
+  desc "Secure runtime for JavaScript and TypeScript"
   homepage "https://deno.land/"
-  url "https://github.com/denoland/deno/releases/download/v0.41.0/deno_src.tar.gz"
-  sha256 "8f42201d9242384629d419fc584bfe2385035d96937ee1cafd702ce4b06253c4"
+  url "https://github.com/denoland/deno/releases/download/v1.0.2/deno_src.tar.gz"
+  sha256 "ae31e17fd3c3d92af21a00a4078a5b14f9db5f26b6bea3391d2a13798f9080b9"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "e958070dd0024d8c077e322dd944a01bbeb1f5eabb42e4abdebe7ad8b7931028" => :catalina
-    sha256 "e9d3eb1ec52faf7531a79ac244e4dba3111d8ab1d5b2389ed1a4f488fa36e296" => :mojave
-    sha256 "c26dbb744b1539161b9a52ea1e43affcd34502d848971f55aeac3128418405eb" => :high_sierra
+    sha256 "af2ebe919ba90c3e4bf68f9b33045b31d94ec26e83c157d289b3c8b7cb85eda2" => :catalina
+    sha256 "170b16e596fc66feb1529a6b458763ba05c8059f65d1f736dc605debbaf8aae4" => :mojave
+    sha256 "854da518700f685f6479aa15fedc6b52ba15f0741c7e343e9233c2f0cf6c6a11" => :high_sierra
   end
 
   depends_on "llvm" => :build
@@ -21,7 +21,7 @@ class Deno < Formula
 
   resource "gn" do
     url "https://gn.googlesource.com/gn.git",
-      :revision => "fd3d768bcfd44a8d9639fe278581bd9851d0ce3a"
+      :revision => "5ed3c9cc67b090d5e311e4bd2aba072173e82db9"
   end
 
   def install
@@ -59,7 +59,7 @@ class Deno < Formula
     EOS
     assert_match "hello deno", shell_output("#{bin}/deno run hello.ts")
     assert_match "console.log",
-      shell_output("#{bin}/deno run --allow-read=#{testpath} https://deno.land/std/examples/cat.ts " \
+      shell_output("#{bin}/deno run --allow-read=#{testpath} https://deno.land/std@0.50.0/examples/cat.ts " \
                    "#{testpath}/hello.ts")
   end
 end

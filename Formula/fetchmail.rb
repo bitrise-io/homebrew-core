@@ -1,14 +1,14 @@
 class Fetchmail < Formula
   desc "Fetch mail from a POP, IMAP, ETRN, or ODMR-capable server"
   homepage "https://www.fetchmail.info/"
-  url "https://downloads.sourceforge.net/project/fetchmail/branch_6.4/fetchmail-6.4.3.tar.xz"
-  sha256 "b0360e14b9aa5d065eef8ff99ad0347ef6cbbfc934c8114908295a402a09d3e4"
+  url "https://downloads.sourceforge.net/project/fetchmail/branch_6.4/fetchmail-6.4.5.tar.xz"
+  sha256 "d30f06920294490141ddcd4a66583bf16a0c88c1d7b4f58a3b9cef8511946b1c"
 
   bottle do
     cellar :any
-    sha256 "f1552770fcb298f73659e8d0de8c9894ad16dca2389ef63c5c1b3cca3efa7890" => :catalina
-    sha256 "23a386dd82b903a3d4409658ebf44b0d713bdae8896f0e5074b1b22c35b943c5" => :mojave
-    sha256 "da86c5f94b640ec425ef0d8cae77d46c614e0d395903ddb01aa425f3b4cff00d" => :high_sierra
+    sha256 "c9a5dfab8c291541e7e1277c7c4309dbbb1e73e8b818e5a653b4b18d62d50bab" => :catalina
+    sha256 "d1c2dc3133e47b621d6b6c60ca384c7fb446020042ec56f38511f23e2fe348a4" => :mojave
+    sha256 "e0753454244c267f79cfe5a2f7ec98ed6e5a5db497432545ca47ae67fce1b62a" => :high_sierra
   end
 
   depends_on "openssl@1.1"

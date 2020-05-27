@@ -3,11 +3,12 @@ class Gtkx3 < Formula
   homepage "https://gtk.org/"
   url "https://download.gnome.org/sources/gtk+/3.24/gtk+-3.24.18.tar.xz"
   sha256 "f5eaff7f4602e44a9ca7bfad5382d7a73e509a8f00b0bcab91c198d096172ad2"
+  revision 1
 
   bottle do
-    sha256 "2842a4263809bfe37c0371374185ca3ab233b60989c93e281c7bf9c3a2ff619c" => :catalina
-    sha256 "6ce65776c75f94af41427b82fa4bcc007b0b4be601e9ebba4620de59fd6e8139" => :mojave
-    sha256 "c5fbb68f4ec95e964af6601d8fc566eecd818092bc9f0f5c2ea4972c48ab2964" => :high_sierra
+    sha256 "a45ed17500b46bd419b997e075fb3a582879f3047015fe9cb66e16160ea3f15b" => :catalina
+    sha256 "f81129c8d12fc7add02cab6767463ec2e6a39175d3a1cccb39481da0074db573" => :mojave
+    sha256 "ea6753e8e8266c289c131211ee420527673f5c5339d6128cafe052241fb82cf9" => :high_sierra
   end
 
   depends_on "docbook" => :build
@@ -26,9 +27,12 @@ class Gtkx3 < Formula
 
   uses_from_macos "libxslt" => :build # for xsltproc
 
+  # Fixes version in pkg-config file -> remove when gtk+3 is updated
+  # See https://github.com/Homebrew/linuxbrew-core/issues/20221
+  patch :DATA
+
   def install
-    args = %W[
-      --prefix=#{prefix}
+    args = std_meson_args + %w[
       -Dx11_backend=false
       -Dquartz_backend=true
       -Dgtk_doc=false
@@ -119,5 +123,21 @@ class Gtkx3 < Formula
     ]
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"
+    # include a version check for the pkg-config files
+    assert_match version.to_s, shell_output("cat #{lib}/pkgconfig/gtk+-3.0.pc").strip
   end
 end
+
+__END__
+diff --git a/meson.build b/meson.build
+index 0240cc3..7ec6a9e 100644
+--- a/meson.build
++++ b/meson.build
+@@ -1,5 +1,5 @@
+ project('gtk+-3.0', 'c',
+-        version: '3.24.17',
++        version: '3.24.18',
+         default_options: [
+           'buildtype=debugoptimized',
+           'warning_level=1'
+

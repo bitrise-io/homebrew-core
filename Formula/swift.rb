@@ -1,14 +1,12 @@
 class Swift < Formula
   desc "High-performance system programming language"
-  homepage "https://github.com/apple/swift"
-  url "https://github.com/apple/swift/archive/swift-4.2.1-RELEASE.tar.gz"
-  sha256 "1e26cf541f7b10b96344fb1c4500ec52ced525cdf7b6bb77425c768cef0b2c5b"
+  homepage "https://swift.org"
+  url "https://github.com/apple/swift/archive/swift-5.2.4-RELEASE.tar.gz"
+  sha256 "94c44101c3dd6774887029110269bbaf9aff68cce5ea0783588157cc08d82ed8"
 
   bottle do
-    cellar :any
-    rebuild 1
-    sha256 "eb739a681ff2f5b585422d3b9408dd817724eb7bc0484a31f38db6f7dc387867" => :mojave
-    sha256 "1a82548cd25a4b6a525b7d8a194393e9853843e952c00c2650792141c17a528d" => :high_sierra
+    sha256 "3ab59265cd42fb656737cddfa4a31012d50762526623a7ccb6655846e9609398" => :catalina
+    sha256 "62f5bf3be8b993ce5647d768b232edfec4bb908cbc87d01002caeff14757d32d" => :mojave
   end
 
   keg_only :provided_by_macos
@@ -16,43 +14,40 @@ class Swift < Formula
   depends_on "cmake" => :build
   depends_on "ninja" => :build
 
-  # Depends on latest version of Xcode
+  # Has strict requirements on the minimum version of Xcode
   # https://github.com/apple/swift#system-requirements
-  depends_on :xcode => ["10.0", :build]
+  depends_on :xcode => ["11.2", :build]
 
   uses_from_macos "icu4c"
 
-  # This formula is expected to have broken/missing linkage to
-  # both UIKit.framework and AssetsLibrary.framework. This is
-  # simply due to the nature of Swift's SDK Overlays.
-  resource "clang" do
-    url "https://github.com/apple/swift-clang/archive/swift-4.2.1-RELEASE.tar.gz"
-    sha256 "cbf22fe2da2e2a19010f6e109ab3f80a8af811d9416c29d031362c02a0e69a66"
+  resource "llvm-project" do
+    url "https://github.com/apple/llvm-project/archive/swift-5.2.4-RELEASE.tar.gz"
+    sha256 "e36edc6c19e013a81b9255e329e9d6ffe7dfd89e8f8f23e1d931464c5f717d3a"
   end
 
   resource "cmark" do
-    url "https://github.com/apple/swift-cmark/archive/swift-4.2.1-RELEASE.tar.gz"
-    sha256 "0e9f097c26703693a5543667716c2cac7a8847806e850db740ae9f90eaf93793"
-  end
-
-  resource "compiler-rt" do
-    url "https://github.com/apple/swift-compiler-rt/archive/swift-4.2.1-RELEASE.tar.gz"
-    sha256 "6b14737d2d57f3287a5c2d80d8d8ae917d8f7bbe4d78cc6d66a80e68d55cd00f"
+    url "https://github.com/apple/swift-cmark/archive/swift-5.2.4-RELEASE.tar.gz"
+    sha256 "d5f656777961390987ed04de2120e73e032713bbd7b616b5e43eb3ae6e209cb5"
   end
 
   resource "llbuild" do
-    url "https://github.com/apple/swift-llbuild/archive/swift-4.2.1-RELEASE.tar.gz"
-    sha256 "07a02b4314050a66fad460b76379988d794dac1452a56fcf5073d318458fed6e"
-  end
-
-  resource "llvm" do
-    url "https://github.com/apple/swift-llvm/archive/swift-4.2.1-RELEASE.tar.gz"
-    sha256 "bcd85a91824dd166fe852ddb7e58c509f52316011c3079010ad59b017a61ad14"
+    url "https://github.com/apple/swift-llbuild/archive/swift-5.2.4-RELEASE.tar.gz"
+    sha256 "66b5374a15998a80cd72e7c1312766a8cbfe427a850f7b97d39b5d0508306e6c"
   end
 
   resource "swiftpm" do
-    url "https://github.com/apple/swift-package-manager/archive/swift-4.2.1-RELEASE.tar.gz"
-    sha256 "e1a50dc3d264bdb8d0447c264e8c164403e84b0831ffd53d87f15a742bda7fa9"
+    url "https://github.com/apple/swift-package-manager/archive/swift-5.2.4-RELEASE.tar.gz"
+    sha256 "383bf75f6dea96c4d48b2242bd3116154365e0e032aa3dce968f2c434732446c"
+  end
+
+  resource "indexstore-db" do
+    url "https://github.com/apple/indexstore-db/archive/swift-5.2.4-RELEASE.tar.gz"
+    sha256 "f1a96c7c9182e6c4f43b04db4a3236b0ff3306132de305fafbdcfd36f2081da2"
+  end
+
+  resource "sourcekit-lsp" do
+    url "https://github.com/apple/sourcekit-lsp/archive/swift-5.2.4-RELEASE.tar.gz"
+    sha256 "6bbc728aa852a969fcab25a4ab0e1016823a0c7ec606ef3d61d0a442cfba02db"
   end
 
   def install
@@ -62,47 +57,67 @@ class Swift < Formula
     toolchain_prefix = "/Swift-#{version}.xctoolchain"
     install_prefix = "#{toolchain_prefix}/usr"
 
-    ln_sf buildpath, "#{workspace}/swift"
-    resources.each { |r| r.stage("#{workspace}/#{r.name}") }
+    ln_sf buildpath, workspace/"swift"
+    resources.each { |r| r.stage(workspace/r.name) }
 
     mkdir build do
       # List of components to build
-      components = %w[
-        compiler clang-resource-dir-symlink
-        clang-builtin-headers-in-clang-resource-dir stdlib sdk-overlay tools
-        editor-integration testsuite-tools toolchain-dev-tools license
+      swift_components = %w[
+        compiler clang-resource-dir-symlink stdlib sdk-overlay
+        tools editor-integration toolchain-tools license
         sourcekit-xpc-service swift-remote-mirror
-        swift-remote-mirror-headers
+        swift-remote-mirror-headers parser-lib
+      ]
+      llvm_components = %w[
+        llvm-cov llvm-profdata IndexStore clang
+        clang-resource-headers compiler-rt clangd
       ]
 
-      system "#{workspace}/swift/utils/build-script",
-        "--release", "--assertions",
-        "--no-swift-stdlib-assertions",
-        "--build-subdir=#{build}",
-        "--llbuild", "--swiftpm",
-        "--",
-        "--workspace=#{workspace}",
-        "--build-args=-j#{ENV.make_jobs}",
-        "--install-destdir=#{prefix}",
-        "--toolchain-prefix=#{toolchain_prefix}",
-        "--install-prefix=#{install_prefix}",
-        "--host-target=macosx-x86_64",
-        "--stdlib-deployment-targets=macosx-x86_64",
-        "--build-swift-static-stdlib",
-        "--build-swift-dynamic-stdlib",
-        "--build-swift-static-sdk-overlay",
-        "--build-swift-dynamic-sdk-overlay",
-        "--build-swift-stdlib-unittest-extra",
-        "--install-swift",
-        "--swift-install-components=#{components.join(";")}",
-        "--llvm-install-components=clang;libclang;libclang-headers",
-        "--install-llbuild",
-        "--install-swiftpm"
+      args = %W[
+        --release --assertions
+        --no-swift-stdlib-assertions
+        --build-subdir=#{build}
+        --llbuild --swiftpm
+        --indexstore-db --sourcekit-lsp
+        --jobs=#{ENV.make_jobs}
+        --verbose-build
+        --
+        --workspace=#{workspace}
+        --install-destdir=#{prefix}
+        --toolchain-prefix=#{toolchain_prefix}
+        --install-prefix=#{install_prefix}
+        --host-target=macosx-x86_64
+        --stdlib-deployment-targets=macosx-x86_64
+        --build-swift-dynamic-stdlib
+        --build-swift-dynamic-sdk-overlay
+        --build-swift-stdlib-unittest-extra
+        --install-swift
+        --swift-install-components=#{swift_components.join(";")}
+        --llvm-install-components=#{llvm_components.join(";")}
+        --install-llbuild
+        --install-swiftpm
+        --install-sourcekit-lsp
+      ]
+
+      system "#{workspace}/swift/utils/build-script", *args
     end
   end
 
+  def caveats
+    <<~EOS
+      The toolchain has been installed to:
+        #{opt_prefix}/Swift-#{version}.xctoolchain
+
+      You can find the Swift binary at:
+        #{opt_prefix}/Swift-#{version}.xctoolchain/usr/bin/swift
+
+      You can also symlink the toolchain for use within Xcode:
+        ln -s #{opt_prefix}/Swift-#{version}.xctoolchain ~/Library/Developer/Toolchains/Swift-#{version}.xctoolchain
+    EOS
+  end
+
   test do
-    (testpath/"test.swift").write <<~EOS
+    (testpath/"test.swift").write <<~'EOS'
       let base = 2
       let exponent_inner = 3
       let exponent_outer = 4
@@ -114,9 +129,9 @@ class Swift < Formula
         }
       }
 
-      print("(\\(base)^\\(exponent_inner))^\\(exponent_outer) == \\(answer)")
+      print("(\(base)^\(exponent_inner))^\(exponent_outer) == \(answer)")
     EOS
-    output = shell_output("#{prefix}/Swift-#{version}.xctoolchain/usr/bin/swift test.swift")
+    output = shell_output("#{prefix}/Swift-#{version}.xctoolchain/usr/bin/swift -v test.swift")
     assert_match "(2^3)^4 == 4096\n", output
   end
 end
