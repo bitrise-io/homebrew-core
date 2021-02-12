@@ -11,7 +11,7 @@ class Xclogparser < Formula
     sha256 cellar: :any_skip_relocation, catalina:      "2621211d63b9e7b2d5feadbd41aea9f71a953032b00b91a67b483b17b6b4bba0"
   end
 
-  depends_on xcode: "12.0"
+  depends_on xcode: "11.0"
 
   resource "test_log" do
     url "https://github.com/tinder-maxwellelliott/XCLogParser/releases/download/0.2.9/test.xcactivitylog"
